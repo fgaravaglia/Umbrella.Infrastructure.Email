@@ -24,8 +24,11 @@ public class EmailServiceTests
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.RequestId, Is.Not.Null.Or.Empty);
-        Assert.That(result.ErrorMessage, Is.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.RequestId, Is.Not.Null.Or.Empty);
+            Assert.That(result.ErrorMessage, Is.Null);
+        });
         Assert.Pass();
     }
 
@@ -44,9 +47,11 @@ public class EmailServiceTests
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.RequestId, Is.Null);
-        Assert.That(result.ErrorMessage, Is.EqualTo("Test exception"));
-
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.RequestId, Is.Null);
+            Assert.That(result.ErrorMessage, Is.EqualTo("Test exception"));
+        });
         Assert.Pass();
     }
 
