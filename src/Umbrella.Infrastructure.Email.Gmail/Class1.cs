@@ -38,8 +38,8 @@ internal class GmailApiSender : IEmailSender
         var credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
             new ClientSecrets
             {
-                ClientId = "1007091683299-616j8jnnvo3h2u5cn6pt98iphaee560u.apps.googleusercontent.com",
-                ClientSecret = "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"
+                ClientId = this._ClientId,
+                ClientSecret = this._SecretId
             },
             scopes,
             "user",
@@ -53,15 +53,11 @@ internal class GmailApiSender : IEmailSender
         });
 
         // 3. Crea il messaggio email
-        var message = new Message();
         var mimeMessage = new MimeMessage();
         mimeMessage.From.Add(new MailboxAddress(emailMetadata.From.Name, emailMetadata.From.Address));
         emailMetadata.Recipients.ForEach(x => mimeMessage.To.Add(new MailboxAddress(x.Name, x.Address)));
         mimeMessage.Subject = emailMetadata.Subject;
-        // mimeMessage.Body = new TextPart("plain")
-        // {
-        //     Text = "Questo è il corpo del messaggio"
-        // };
+
         // Crea la parte HTML
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = emailMetadata.HtmlBody;
