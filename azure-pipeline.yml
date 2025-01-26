@@ -1,0 +1,75 @@
+trigger:
+  branches:
+    include:
+      - main
+    exclude:
+      - release-candidate
+
+  paths:
+    include:
+      - src
+    exclude:
+      - script/*
+      - libs/*
+      - devops/*
+
+schedules:
+  - cron: "0 12 * * 0"
+    displayName: Weekly Sunday build
+    branches:
+      include:
+        - main
+
+resources:
+  repositories:
+    # For type: github, name is <identity>/<repo> as in the examples above. For type: git (Azure Repos), name is <project>/<repo>.
+    - repository: coreTemplates
+      type: git
+      name: Umbrella/Umbrella.Devops
+      ref: refs/heads/main
+      endpoint: Garaproject
+
+parameters:
+  - name: inputSonarScanEnabled
+    displayName: "Enable Sonar Scan"
+    type: boolean
+    default: False
+  - name: inputOwaspScanEnabled
+    displayName: "Enable OWASP Scan"
+    type: boolean
+    default: true
+  - name: inputPublishPackage
+    displayName: "Publish Package to Nuget.Org"
+    type: boolean
+    default: False
+
+extends:
+  template: dotnet-pakages-pipeline.1.2.yaml@coreTemplates
+  parameters:
+    UseCommonVersioning: true
+    MajorVersion: 9
+    MinorVersion: 0
+    PatchVersion: 0
+    TargetDotNetFramework: 8.x
+    SonarScanEnabled: ${{ parameters.inputSonarScanEnabled }}
+    SonarSettings:
+      ProjectKey: Umbrella.Infrastructure.Email
+      ProjectName: Umbrella.Infrastructure.Email
+      TestReportFileName: cobertura.xml
+    PublishPackage: ${{ parameters.inputPublishPackage }}
+    CustomNugetFile: src/Nuget.config
+    NugetSecretFileName: Nuget.apikey.txt
+    OwaspScanEnabled: ${{ parameters.inputOwaspScanEnabled }}
+    ListOfProjToBuild:
+      - path: src/Umbrella.Infrastructure.Email.Tests
+        name: Umbrella.Infrastructure.Email.Tests
+        publishRequired: false
+        isWebProj: False
+    ListOfProjToTest:
+      - path: src/Umbrella.Infrastructure.Email.Tests
+        name: Umbrella.Infrastructure.Email.Tests
+    ListOfProjToPublish:
+      - path: src/Umbrella.Infrastructure.Email.Core
+        name: Umbrella.Infrastructure.Email.Core
+      - path: src/Umbrella.Infrastructure.Email.Gmail
+        name: Umbrella.Infrastructure.Email.Gmail
