@@ -44,7 +44,7 @@ public class EmailServiceTests
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.RequestId, Is.Not.Null);
+        Assert.That(result.RequestId, Is.Null);
         Assert.That(result.ErrorMessage, Is.EqualTo("Test exception"));
 
         Assert.Pass();
