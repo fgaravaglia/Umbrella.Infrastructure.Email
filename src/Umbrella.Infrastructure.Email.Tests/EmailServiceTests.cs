@@ -23,9 +23,9 @@ public class EmailServiceTests
         var result = await emailService.SendAsync(emailMetadata);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.NotNull(result.RequestId);
-        Assert.Null(result.ErrorMessage);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.RequestId, Is.Not.Null.Or.Empty);
+        Assert.That(result.ErrorMessage, Is.Null);
         Assert.Pass();
     }
 
@@ -43,9 +43,10 @@ public class EmailServiceTests
         var result = await emailService.SendAsync(emailMetadata);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Null(result.RequestId);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.RequestId, Is.Not.Null);
         Assert.That(result.ErrorMessage, Is.EqualTo("Test exception"));
+
         Assert.Pass();
     }
 
